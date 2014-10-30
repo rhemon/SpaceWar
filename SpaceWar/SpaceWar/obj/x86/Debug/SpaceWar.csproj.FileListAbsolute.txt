@@ -1,0 +1,12 @@
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\obj\x86\Debug\ResolveAssemblyReference.cache
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\spaceship.xnb
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\explosion.xnb
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\SpaceWar.exe
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\SpaceWar.pdb
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\ExplodingTeddies.dll
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\obj\x86\Debug\SpaceWar.exe
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\obj\x86\Debug\SpaceWar.pdb
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\bullet.xnb
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\alien.xnb
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\alienBullet.xnb
