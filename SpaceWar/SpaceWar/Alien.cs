@@ -43,6 +43,7 @@ namespace SpaceWar
         public bool Active
         {
             get { return active; }
+            set { active = value; }
         }
         public int X
         {
@@ -69,7 +70,7 @@ namespace SpaceWar
         {
             spriteBatch.Draw(sprite, drawRectangle, Color.White);
         }
-        public void UpdateBullets(GameTime gameTime)
+        public void UpdateBullets(GameTime gameTime, Spaceship spaceship, int SPACESHIP_WIDTH)
         {
             foreach (Bullet bullet in bullets)
             {
@@ -77,23 +78,44 @@ namespace SpaceWar
                 {
                     bullet.UpdateAlienBullet(gameTime);
                 }
+                
             }
             //cleanupbullets();
         }
-        public void DrawBullets(ContentManager Content, Texture2D bulletSprite, SpriteBatch spriteBatch, Vector2 targetLocation)
+
+        public void DrawUpdatedBullet(SpriteBatch spriteBatch)
         {
-            bullets.Add(new Bullet(Content, bulletSprite, this, targetLocation));
-            foreach (Bullet bullet in bullets) 
+            foreach (Bullet bullet in bullets)
             {
-                if (bullet.Active == 1) 
+                if (bullet.Active == 1)
                 {
                     bullet.Draw(spriteBatch);
                 }
             }
-        }  
+            cleanUpBullets(); 
+        }
+
+        public void DrawBullets(ContentManager Content, Texture2D bulletSprite, SpriteBatch spriteBatch, Vector2 targetLocation)
+        {
+            bullets.Add(new Bullet(Content, bulletSprite, this, targetLocation));
+            this.DrawUpdatedBullet(spriteBatch);
+        }
+        
         #endregion
 
         #region Private Methods
+
+        private void cleanUpBullets()
+        {
+            for (int i = bullets.Count - 1; i >= 0; i--)
+            {
+                if (bullets[i].Active == 0)
+                {
+                    bullets.RemoveAt(i);
+                }
+            }
+
+        }
         #endregion
 
         #endregion
