@@ -18,6 +18,7 @@ namespace SpaceWar
         bool active;
         Texture2D sprite;
         Vector2 velocity;
+        int shootTIME = 0;
         Rectangle drawRectangle;
         List<Bullet> bullets = new List<Bullet>();
          
@@ -57,7 +58,11 @@ namespace SpaceWar
         {
             get { return drawRectangle.Y; }
         }
-
+        public int SHOOT_TIME
+        {
+            get { return shootTIME; }
+            set { shootTIME = value; }
+        }
         public Rectangle DrawRectangle
         {
             get { return drawRectangle; }
@@ -135,7 +140,7 @@ namespace SpaceWar
         {
             foreach (Bullet bullet in SpaceshipBullets)
             {
-                if ((bullet.X > drawRectangle.X && bullet.X < drawRectangle.X + drawRectangle.Width) && ((bullet.Y < drawRectangle.Y + drawRectangle.Height) && (bullet.Y > drawRectangle.Y)))
+                if ((bullet.X >= drawRectangle.X && bullet.X <= drawRectangle.X + drawRectangle.Width) && ((bullet.Y <= drawRectangle.Y + drawRectangle.Height) && (bullet.Y >= drawRectangle.Y)))
                 {
                     this.explode = true;
                     bullet.Active = 0;

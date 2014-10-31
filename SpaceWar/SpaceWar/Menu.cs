@@ -21,7 +21,7 @@ namespace SpaceWar
         // fields for buttons
         MenuButton playButton;
         MenuButton quitButton;
-
+        Vector2 STRING_POSION = new Vector2(10, 10);
         #endregion
 
         #region Constructors
@@ -71,6 +71,7 @@ namespace SpaceWar
         public void Draw(SpriteBatch spriteBatch)
         {
             // draw buttons
+            spriteBatch.DrawString(Game1.Font, Game1.SCORE_STRING, STRING_POSION, Color.White);
             playButton.Draw(spriteBatch);
             quitButton.Draw(spriteBatch);
         }

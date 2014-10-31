@@ -64,6 +64,15 @@
       <Output>\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\quitbutton.xnb</Output>
       <Time>2011-12-15T23:52:06+06:00</Time>
     </Item>
+    <Item>
+      <Source>TextFont.spritefont</Source>
+      <Name>TextFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\TextFont.xnb</Output>
+      <Time>2014-10-31T21:01:14+06:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>

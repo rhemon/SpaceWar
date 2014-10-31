@@ -34,9 +34,9 @@ namespace SpaceWar
         const int ALIEN_HEIGHT = 50; 
         Spaceship spaceship;
         List<Alien> aliens = new List<Alien>();
-        int ALIEN_SPAWN_TIME = 400;
+        int ALIEN_SPAWN_TIME = 4000;
         int TIME_GONE = 0;
-        int SHOOT_TIME = 0;
+        
         const int timeToShoot = 1000;
         Texture2D expSprite;
         Texture2D bullet;
@@ -44,7 +44,13 @@ namespace SpaceWar
         Texture2D alienBullet;
         bool isGameOver = false; 
         Random rand = new Random();
-        
+        static SpriteFont font;
+        Vector2 SCORE_POSITION = new Vector2(10, 10);
+        Vector2 HEALTH_POSITION = new Vector2(10, 30);
+        const string SCORE_STRING_PREFIX = "Score: ";
+        const string HEALTH_STRING_PREFIX = "Health: ";
+        static string scoreString;
+        string healthString;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -64,7 +70,8 @@ namespace SpaceWar
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            clearEverything();
+            score = 0;
+            ALIEN_SPAWN_TIME = 4000;
             base.Initialize();
 
         }
@@ -85,7 +92,9 @@ namespace SpaceWar
             expSprite = Content.Load<Texture2D>("explosion");
             alienBullet = Content.Load<Texture2D>("alienBullet");
             alien = Content.Load<Texture2D>("alien");
-            
+            font = Content.Load<SpriteFont>("TextFont");
+            scoreString = GetScoreString(score);
+            healthString = GetHealthString(spaceship.Health);
             // TODO: use this.Content to load your game content here
         }
 
@@ -98,7 +107,16 @@ namespace SpaceWar
             // TODO: Unload any non ContentManager content here
         }
         #endregion
-
+        #region Properties
+        public static string SCORE_STRING
+        {
+            get { return scoreString; }
+        }
+        public static SpriteFont Font
+        {
+            get { return font; }
+        }
+        #endregion
         #region Game Loop
         #region Update
         /// <summary>
@@ -126,6 +144,23 @@ namespace SpaceWar
                     LoadContent();
                     isGameOver = false;
                 }
+                if (score == 100 && ALIEN_SPAWN_TIME != 2000)
+                {
+                    ALIEN_SPAWN_TIME /= 2;
+                }
+                if (score == 150 && ALIEN_SPAWN_TIME != 1000)
+                {
+                    ALIEN_SPAWN_TIME /= 2;
+                }
+                if (score == 200 && ALIEN_SPAWN_TIME != 500)
+                {
+                    ALIEN_SPAWN_TIME /= 2;
+                }
+                if (score == 300 && ALIEN_SPAWN_TIME != 369)
+                {
+                    ALIEN_SPAWN_TIME = 369;
+                }
+                scoreString = GetScoreString(score);
                 KeyboardState keyboard = Keyboard.GetState();
                 wasEscapeDown = keyboard.IsKeyDown(Keys.Escape);
                 if (wasEscapeDown)
@@ -165,6 +200,12 @@ namespace SpaceWar
                             explosion.Add(new Explosion(expSprite, alien.DrawRectangle.Center.X, alien.DrawRectangle.Center.Y));
                             alien.Active = false;
                         }
+                        if (spaceship.DrawRectangle.Contains(alien.X, alien.Y) || spaceship.DrawRectangle.Intersects(alien.DrawRectangle)) 
+                        {
+                            explosion.Add(new Explosion(expSprite, alien.DrawRectangle.Center.X, alien.DrawRectangle.Center.Y));
+                            alien.Active = false;
+                            spaceship.DecrementHealth();
+                        }
                     }
 
                 }
@@ -172,6 +213,7 @@ namespace SpaceWar
                 {
                     exp.Update(gameTime);
                 }
+                healthString = GetHealthString(spaceship.Health);
                 gameOver(gameTime);
                 cleanUpExplosion();
             }
@@ -221,7 +263,7 @@ namespace SpaceWar
                 {
                     if (alien.Active)
                     {
-                        // Fix the shoot problem
+                        
                         alien.Draw(spriteBatch);
                         alien.DrawUpdatedBullet(spriteBatch);
                         AlienShoot(gameTime, alien);
@@ -231,6 +273,9 @@ namespace SpaceWar
                 {
                     exp.Draw(spriteBatch);
                 }
+                // draw score
+                spriteBatch.DrawString(font, scoreString, SCORE_POSITION, Color.White);
+                spriteBatch.DrawString(font, healthString, HEALTH_POSITION, Color.White);
             }
             else
             {
@@ -260,6 +305,7 @@ namespace SpaceWar
                     if (secWaitedFor > SecondsToWaitFor)
                     {
                         isGameOver = true;
+                        clearEverything();
                         ChangeState(GameState.MainMenu);
                     }
                 }
@@ -294,21 +340,28 @@ namespace SpaceWar
         // Fix the problem over here, it isn't shooting problem
         private void AlienShoot(GameTime gameTime, Alien alien) 
         {
-            SHOOT_TIME += gameTime.ElapsedGameTime.Milliseconds;
-            if (SHOOT_TIME > timeToShoot)
+            alien.SHOOT_TIME += gameTime.ElapsedGameTime.Milliseconds;
+            if (alien.SHOOT_TIME > timeToShoot)
             {
                 alien.DrawBullets(Content, alienBullet, spriteBatch, new Vector2(spaceship.X, spaceship.Y));
-                SHOOT_TIME = 0;
+                alien.SHOOT_TIME = 0;
             }
         }
         private void clearEverything()
         {
             TIME_GONE = 0;
-            SHOOT_TIME = 0;
             secWaitedFor = 0; 
             aliens.Clear();
             explosion.Clear();
             spaceshipExplode.Clear();
+        }
+        private string GetScoreString(int score)
+        {
+            return SCORE_STRING_PREFIX + score;
+        }
+        private string GetHealthString(int health)
+        {
+            return HEALTH_STRING_PREFIX + spaceship.Health;
         }
         #endregion
     }

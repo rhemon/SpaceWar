@@ -75,6 +75,10 @@ namespace SpaceWar
         {
             get { return drawRectangle.Y; }
         }
+        public Rectangle DrawRectangle
+        {
+            get { return drawRectangle; }
+        }
         public List<Bullet> Bullets
         {
             get { return bullets; }
@@ -168,7 +172,10 @@ namespace SpaceWar
         }
         public void DecrementHealth()
         {
-            health -= 5; 
+            if (health > 0)
+            {
+                health -= 5;
+            }
         }
         #endregion
 

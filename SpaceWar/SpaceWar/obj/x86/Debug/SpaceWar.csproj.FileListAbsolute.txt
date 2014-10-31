@@ -11,3 +11,8 @@
 \\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\alienBullet.xnb
 \\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\playbutton.xnb
 \\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\quitbutton.xnb
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\TextFont.xnb
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\SpaceWar.exe.manifest
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\SpaceWar.application
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\obj\x86\Debug\SpaceWar.exe.manifest
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\obj\x86\Debug\SpaceWar.application
