@@ -46,6 +46,24 @@
       <Output>\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\alienBullet.xnb</Output>
       <Time>2014-10-26T14:51:59+06:00</Time>
     </Item>
+    <Item>
+      <Source>playbutton.png</Source>
+      <Name>playbutton</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\playbutton.xnb</Output>
+      <Time>2011-12-21T07:55:02+06:00</Time>
+    </Item>
+    <Item>
+      <Source>quitbutton.png</Source>
+      <Name>quitbutton</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\quitbutton.xnb</Output>
+      <Time>2011-12-15T23:52:06+06:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>

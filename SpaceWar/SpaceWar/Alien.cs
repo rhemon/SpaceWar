@@ -8,14 +8,14 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-
-
 namespace SpaceWar
 {
     class Alien
     {
         #region Fields 
-        bool active; 
+         
+        bool explode = false; 
+        bool active;
         Texture2D sprite;
         Vector2 velocity;
         Rectangle drawRectangle;
@@ -25,13 +25,13 @@ namespace SpaceWar
         #endregion
 
         #region Constructors
-        public Alien(Texture2D sprite, Vector2 location, int WIDTH, int HEIGHT)
+        public Alien(ContentManager Content, Texture2D sprite, Vector2 location, int WIDTH, int HEIGHT)
         {
             this.sprite = sprite;
             drawRectangle = new Rectangle((int)location.X, (int)location.Y, WIDTH, HEIGHT);
             velocity = new Vector2(0, 2);
             health = 20;
-            active = true; 
+            active = true;
         }
         #endregion
 
@@ -45,6 +45,10 @@ namespace SpaceWar
             get { return active; }
             set { active = value; }
         }
+        public bool Explode
+        {
+            get { return explode; }
+        }
         public int X
         {
             get { return drawRectangle.X; }
@@ -53,22 +57,32 @@ namespace SpaceWar
         {
             get { return drawRectangle.Y; }
         }
+
+        public Rectangle DrawRectangle
+        {
+            get { return drawRectangle; }
+        }
         #endregion
 
         #region Methods
 
         #region Public Methods
-        public void Update(GameTime gameTime, int WINDOW_HEIGHT)
+        public void Update(GameTime gameTime, int WINDOW_HEIGHT, List<Bullet> SpaceshipBullets)
         {
+            
             drawRectangle.Y += (int)(this.velocity.Y);
             if ((drawRectangle.Y + drawRectangle.Height) > WINDOW_HEIGHT)
             {
-                this.active = false; 
+                this.active = false;
             }
+            
+            
+            GotHit(SpaceshipBullets);
         }
         public void Draw(SpriteBatch spriteBatch) 
         {
             spriteBatch.Draw(sprite, drawRectangle, Color.White);
+           
         }
         public void UpdateBullets(GameTime gameTime, Spaceship spaceship, int SPACESHIP_WIDTH)
         {
@@ -115,6 +129,18 @@ namespace SpaceWar
                 }
             }
 
+        }
+
+        private void GotHit(List<Bullet> SpaceshipBullets)
+        {
+            foreach (Bullet bullet in SpaceshipBullets)
+            {
+                if ((bullet.X > drawRectangle.X && bullet.X < drawRectangle.X + drawRectangle.Width) && ((bullet.Y < drawRectangle.Y + drawRectangle.Height) && (bullet.Y > drawRectangle.Y)))
+                {
+                    this.explode = true;
+                    bullet.Active = 0;
+                }
+            }
         }
         #endregion
 

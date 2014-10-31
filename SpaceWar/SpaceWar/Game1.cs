@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using ExplodingTeddies;
 namespace SpaceWar
 {
 
@@ -18,10 +17,13 @@ namespace SpaceWar
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         #region Initializer
+        // field to keep track of game state
+        static GameState state;
+        bool wasEscapeDown = false;
+        Menu mainMenu;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        List<Explosion> aliens_to_explode = new List<Explosion>();
-        List<Alien> AliensToExplode = new List<Alien>(); 
+        List<Explosion> explosion = new List<Explosion>(); 
         const int WINDOW_WIDTH = 800;
         const int WINDOW_HEIGHT = 600;
         const int ALIEN_WIDTH = 75;
@@ -31,8 +33,8 @@ namespace SpaceWar
         int ALIEN_SPAWN_TIME = 400;
         int TIME_GONE = 0;
         int SHOOT_TIME = 0;
-        const int timeToShoot = 3000;
-        Alien alienThatWillGetHit;
+        const int timeToShoot = 1000;
+        Texture2D expSprite;
         Texture2D bullet;
         Texture2D alien;
         Texture2D alienBullet; 
@@ -45,6 +47,7 @@ namespace SpaceWar
      
             graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
             graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
+            IsMouseVisible = true;
         }
 
         /// <summary>
@@ -56,7 +59,6 @@ namespace SpaceWar
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
             base.Initialize();
 
         }
@@ -70,9 +72,11 @@ namespace SpaceWar
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
+            mainMenu = new Menu(Content, WINDOW_WIDTH, WINDOW_HEIGHT);
             spriteBatch = new SpriteBatch(GraphicsDevice);
             spaceship = new Spaceship(Content, WINDOW_WIDTH, WINDOW_HEIGHT);
             bullet = Content.Load<Texture2D>("bullet");
+            expSprite = Content.Load<Texture2D>("explosion");
             alienBullet = Content.Load<Texture2D>("alienBullet");
             alien = Content.Load<Texture2D>("alien");
             
@@ -102,39 +106,57 @@ namespace SpaceWar
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            KeyboardState keyboard = Keyboard.GetState();
-            // TODO: Add your update logic here
-            spaceship.Update(gameTime, keyboard, WINDOW_WIDTH, WINDOW_HEIGHT);
-            foreach (Alien alien in aliens)
+            if (state == GameState.MainMenu)
             {
-                if ((spaceship.X + 50 > alien.X) && (spaceship.X < alien.X + ALIEN_WIDTH))
+                // update main menu
+                mainMenu.Update(Mouse.GetState());
+            
+            }
+            else if (state == GameState.Play)
+            {
+                
+                KeyboardState keyboard = Keyboard.GetState();
+                wasEscapeDown = keyboard.IsKeyDown(Keys.Escape);
+                if (wasEscapeDown)
                 {
-                    alienThatWillGetHit = alien;
+                    wasEscapeDown = false;
+                    ChangeState(GameState.MainMenu); 
                 }
-            }
-            spaceship.UpdateBullet(gameTime, AliensToExplode, alienThatWillGetHit, Content);
-            TIME_GONE += gameTime.ElapsedGameTime.Milliseconds;
-            if (TIME_GONE > ALIEN_SPAWN_TIME)
-            {
-                aliens.Add(new Alien(alien, getRandomLocation(), ALIEN_WIDTH, ALIEN_HEIGHT));
-                TIME_GONE = 0;
-            }
-
-            foreach (Alien alien in aliens)
-            {
-                if (alien.Active)
+                // TODO: Add your update logic here
+                spaceship.Update(gameTime, keyboard, WINDOW_WIDTH, WINDOW_HEIGHT);
+                spaceship.UpdateBullet(gameTime);
+                TIME_GONE += gameTime.ElapsedGameTime.Milliseconds;
+                if (TIME_GONE > ALIEN_SPAWN_TIME)
                 {
-                    alien.Update(gameTime, WINDOW_HEIGHT);
-                    alien.UpdateBullets(gameTime, spaceship, 100);
+                    aliens.Add(new Alien(Content, alien, getRandomLocation(), ALIEN_WIDTH, ALIEN_HEIGHT));
+                    TIME_GONE = 0;
                 }
-            }
-            addAliensToExplodeToExplosionList();
-            foreach (Explosion explosion in aliens_to_explode) 
-            {
-                explosion.Play(AliensToExplode[aliens_to_explode.IndexOf(explosion)].X, AliensToExplode[aliens_to_explode.IndexOf(explosion)].Y);
-                explosion.Update(gameTime);
 
+                foreach (Alien alien in aliens)
+                {
+                    if (alien.Active)
+                    {
+                        alien.Update(gameTime, WINDOW_HEIGHT, spaceship.Bullets);
+                        alien.UpdateBullets(gameTime, spaceship, 100);
+                        if (alien.Explode)
+                        {
+                            explosion.Add(new Explosion(expSprite, alien.DrawRectangle.Center.X, alien.DrawRectangle.Center.Y));
+                            alien.Active = false;
+                        }
+                    }
+
+                }
+                foreach (Explosion exp in explosion)
+                {
+                    exp.Update(gameTime);
+                }
+                cleanUpExplosion();
             }
+            else
+            {
+                this.Exit();
+            }
+            
             base.Update(gameTime);
         }
         #endregion
@@ -148,44 +170,52 @@ namespace SpaceWar
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            KeyboardState keyboard = Keyboard.GetState();
+            
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            spaceship.Draw(spriteBatch);
-            spaceship.DrawBullet(Content, spriteBatch, keyboard, bullet);
-            foreach (Alien alien in aliens)
+            if (state == GameState.MainMenu)
             {
-                if (alien.Active)
-                {
-                    // Fix the shoot problem
-                    alien.Draw(spriteBatch);
-                    alien.DrawUpdatedBullet(spriteBatch);
-                    AlienShoot(gameTime, alien);
-                }   
+                // draw the main menu
+                mainMenu.Draw(spriteBatch);
             }
-
-            foreach (Explosion explosion in aliens_to_explode) 
+            else if (state == GameState.Play)
             {
-                explosion.Draw(spriteBatch);
-                AliensToExplode[aliens_to_explode.IndexOf(explosion)].Active = false;
+                KeyboardState keyboard = Keyboard.GetState();
+                spaceship.Draw(spriteBatch);
+                spaceship.DrawBullet(Content, spriteBatch, keyboard, bullet);
+                foreach (Alien alien in aliens)
+                {
+                    if (alien.Active)
+                    {
+                        // Fix the shoot problem
+                        alien.Draw(spriteBatch);
+                        alien.DrawUpdatedBullet(spriteBatch);
+                        AlienShoot(gameTime, alien);
+                    }
+                }
+                foreach (Explosion exp in explosion)
+                {
+                    exp.Draw(spriteBatch);
+                }
+            }
+            else
+            {
+                this.Exit();
             }
             spriteBatch.End();
             base.Draw(gameTime);
 
         }
 
-
+        public static void ChangeState(GameState newState)
+        {
+            state = newState;
+        }
         #endregion
         #endregion
 
         #region Private Mehods 
-        private void addAliensToExplodeToExplosionList()
-        {
- 	        foreach (Alien alien in AliensToExplode)
-            {
-                aliens_to_explode.Add(new Explosion(Content)); 
-            }
-        }
+
         private Vector2 getRandomLocation()
         {
             int X = rand.Next(1, WINDOW_WIDTH-ALIEN_WIDTH);
@@ -199,6 +229,16 @@ namespace SpaceWar
                 if (!(aliens[i].Active))
                 {
                     aliens.RemoveAt(i);
+                }
+            }
+        }
+        private void cleanUpExplosion()
+        {
+            for (int i = explosion.Count() - 1; i >= 0; i--)
+            {
+                if (!(explosion[i].Active))
+                {
+                    explosion.RemoveAt(i);
                 }
             }
         }

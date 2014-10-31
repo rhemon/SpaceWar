@@ -4,9 +4,10 @@
 \\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\explosion.xnb
 \\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\SpaceWar.exe
 \\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\SpaceWar.pdb
-\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\ExplodingTeddies.dll
 \\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\obj\x86\Debug\SpaceWar.exe
 \\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\obj\x86\Debug\SpaceWar.pdb
 \\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\bullet.xnb
 \\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\alien.xnb
 \\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\alienBullet.xnb
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\playbutton.xnb
+\\psf\Home\Desktop\SpaceWar\SpaceWar\SpaceWar\bin\x86\Debug\Content\quitbutton.xnb

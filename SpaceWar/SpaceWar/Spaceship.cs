@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using ExplodingTeddies;
 namespace SpaceWar
 {
     class Spaceship
@@ -75,6 +74,10 @@ namespace SpaceWar
         {
             get { return drawRectangle.Y; }
         }
+        public List<Bullet> Bullets
+        {
+            get { return bullets; }
+        }
         #endregion
 
         #region Methods 
@@ -121,17 +124,14 @@ namespace SpaceWar
             spriteBatch.Draw(sprite, drawRectangle, Color.White);
         }
 
-        public void UpdateBullet(GameTime gameTime, List<Alien> AliensToExplode, Alien alien, ContentManager Content)
+        public void UpdateBullet(GameTime gameTime)
         {
             foreach (Bullet bullet in bullets)
             {
                 if (bullet.Active == 1)
                 {
                     bullet.Update(gameTime);
-                    if (bullet.Y < alien.Y + 75) 
-                    {
-                        AliensToExplode.Add(alien);
-                    }
+                    
                 }
             }
             this.bulletsCleanUp();
