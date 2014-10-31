@@ -90,7 +90,7 @@ namespace SpaceWar
             {
                 if (bullet.Active == 1)
                 {
-                    bullet.UpdateAlienBullet(gameTime);
+                    bullet.UpdateAlienBullet(gameTime, spaceship);
                 }
                 
             }

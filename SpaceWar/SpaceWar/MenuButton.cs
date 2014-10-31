@@ -82,6 +82,7 @@ namespace SpaceWar
                     // if click finished on button, change game state
                     if (clickStarted)
                     {
+                       
                         Game1.ChangeState(clickState);
                         clickStarted = false;
                     }

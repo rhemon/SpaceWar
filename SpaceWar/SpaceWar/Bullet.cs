@@ -95,14 +95,20 @@ namespace SpaceWar
             {
                 active = 0;
             }
+            
 
         }
 
-        public void UpdateAlienBullet(GameTime gameTime)
+        public void UpdateAlienBullet(GameTime gameTime, Spaceship spaceship)
         {
             drawRectangle.Y += (int)(this.velocity.Y * gameTime.ElapsedGameTime.Milliseconds);
             if (drawRectangle.Y > 600)
             {
+                this.active = 0;
+            }
+            if ((drawRectangle.Y > spaceship.Y) && (drawRectangle.X > spaceship.X && drawRectangle.X < spaceship.X + 100))
+            {
+                spaceship.DecrementHealth();
                 this.active = 0;
             }
             

@@ -19,8 +19,12 @@ namespace SpaceWar
         #region Initializer
         // field to keep track of game state
         static GameState state;
+        int score;
+        int secWaitedFor = 0;
+        const int SecondsToWaitFor = 1000;
         bool wasEscapeDown = false;
         Menu mainMenu;
+        List<Explosion> spaceshipExplode = new List<Explosion>(); 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         List<Explosion> explosion = new List<Explosion>(); 
@@ -37,7 +41,8 @@ namespace SpaceWar
         Texture2D expSprite;
         Texture2D bullet;
         Texture2D alien;
-        Texture2D alienBullet; 
+        Texture2D alienBullet;
+        bool isGameOver = false; 
         Random rand = new Random();
         
         public Game1()
@@ -59,6 +64,7 @@ namespace SpaceWar
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            clearEverything();
             base.Initialize();
 
         }
@@ -114,7 +120,12 @@ namespace SpaceWar
             }
             else if (state == GameState.Play)
             {
-                
+                if (isGameOver)
+                {
+                    Initialize();
+                    LoadContent();
+                    isGameOver = false;
+                }
                 KeyboardState keyboard = Keyboard.GetState();
                 wasEscapeDown = keyboard.IsKeyDown(Keys.Escape);
                 if (wasEscapeDown)
@@ -123,15 +134,25 @@ namespace SpaceWar
                     ChangeState(GameState.MainMenu); 
                 }
                 // TODO: Add your update logic here
-                spaceship.Update(gameTime, keyboard, WINDOW_WIDTH, WINDOW_HEIGHT);
-                spaceship.UpdateBullet(gameTime);
+                if (!spaceship.Explode)
+                {
+                    spaceship.Update(gameTime, keyboard, WINDOW_WIDTH, WINDOW_HEIGHT);
+                    spaceship.UpdateBullet(gameTime);
+                }
+                else if (spaceship.Explode)
+                {
+                    spaceshipExplode.Add(new Explosion(expSprite, spaceship.X+ 100/2, spaceship.Y + 100/2));
+                    spaceshipExplode[0].Update(gameTime);
+                }
+                
+                
                 TIME_GONE += gameTime.ElapsedGameTime.Milliseconds;
                 if (TIME_GONE > ALIEN_SPAWN_TIME)
                 {
                     aliens.Add(new Alien(Content, alien, getRandomLocation(), ALIEN_WIDTH, ALIEN_HEIGHT));
                     TIME_GONE = 0;
                 }
-
+                
                 foreach (Alien alien in aliens)
                 {
                     if (alien.Active)
@@ -140,6 +161,7 @@ namespace SpaceWar
                         alien.UpdateBullets(gameTime, spaceship, 100);
                         if (alien.Explode)
                         {
+                            score += 10;
                             explosion.Add(new Explosion(expSprite, alien.DrawRectangle.Center.X, alien.DrawRectangle.Center.Y));
                             alien.Active = false;
                         }
@@ -150,6 +172,7 @@ namespace SpaceWar
                 {
                     exp.Update(gameTime);
                 }
+                gameOver(gameTime);
                 cleanUpExplosion();
             }
             else
@@ -181,8 +204,19 @@ namespace SpaceWar
             else if (state == GameState.Play)
             {
                 KeyboardState keyboard = Keyboard.GetState();
-                spaceship.Draw(spriteBatch);
-                spaceship.DrawBullet(Content, spriteBatch, keyboard, bullet);
+                if (!spaceship.Explode)
+                {
+                    spaceship.Draw(spriteBatch);
+                    spaceship.DrawBullet(Content, spriteBatch, keyboard, bullet);
+                }
+                else
+                {
+                    if (spaceshipExplode.Count > 0)
+                    {
+                        spaceshipExplode[0].Draw(spriteBatch);
+                    }
+                }
+                
                 foreach (Alien alien in aliens)
                 {
                     if (alien.Active)
@@ -211,11 +245,26 @@ namespace SpaceWar
         {
             state = newState;
         }
+       
         #endregion
         #endregion
 
         #region Private Mehods 
-
+        private void gameOver(GameTime gameTime)
+        {
+            if (spaceshipExplode.Count >= 1)
+            {
+                if (!(spaceshipExplode[0].Active) && spaceship.Explode)
+                {
+                    secWaitedFor += gameTime.ElapsedGameTime.Milliseconds;
+                    if (secWaitedFor > SecondsToWaitFor)
+                    {
+                        isGameOver = true;
+                        ChangeState(GameState.MainMenu);
+                    }
+                }
+            }
+        }
         private Vector2 getRandomLocation()
         {
             int X = rand.Next(1, WINDOW_WIDTH-ALIEN_WIDTH);
@@ -251,6 +300,15 @@ namespace SpaceWar
                 alien.DrawBullets(Content, alienBullet, spriteBatch, new Vector2(spaceship.X, spaceship.Y));
                 SHOOT_TIME = 0;
             }
+        }
+        private void clearEverything()
+        {
+            TIME_GONE = 0;
+            SHOOT_TIME = 0;
+            secWaitedFor = 0; 
+            aliens.Clear();
+            explosion.Clear();
+            spaceshipExplode.Clear();
         }
         #endregion
     }

@@ -22,7 +22,8 @@ namespace SpaceWar
         const int SPRITE_WIDTH_AND_HEIGHT = 100;
         //Spaceship Movement 
         Vector2 velocity;
-        
+        bool explode = false; 
+
         // Bullet 
         List<Bullet> bullets;
         ButtonState previouslyPressed = ButtonState.Released;
@@ -78,6 +79,10 @@ namespace SpaceWar
         {
             get { return bullets; }
         }
+        public bool Explode
+        {
+            get { return explode; }
+        }
         #endregion
 
         #region Methods 
@@ -116,6 +121,10 @@ namespace SpaceWar
                 {
                     drawRectangle.X = 0;
                 }
+            }
+            if (health <= 0)
+            {
+                this.explode = true; 
             }
         }
 
@@ -157,7 +166,10 @@ namespace SpaceWar
                 }
             }
         }
-        
+        public void DecrementHealth()
+        {
+            health -= 5; 
+        }
         #endregion
 
         #region Private Methods
@@ -172,6 +184,7 @@ namespace SpaceWar
             }
 
         }
+
         #endregion
 
         #endregion
